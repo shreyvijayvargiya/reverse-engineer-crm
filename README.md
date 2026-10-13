@@ -42,7 +42,7 @@ Example blueprints for all of these are in [`examples/`](examples).
 ## Install
 
 ```bash
-git clone <this repository>
+git clone https://github.com/shreyvijayvargiya/reverse-engineer-crm
 cd reverse-engineer-crm
 npm install && npm run build && npm link   # gives you the `rcrm` command
 ```
