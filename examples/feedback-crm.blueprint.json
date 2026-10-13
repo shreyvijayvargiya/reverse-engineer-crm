@@ -1,0 +1,262 @@
+{
+  "version": 1,
+  "name": "Business CRM",
+  "slug": "business-crm",
+  "description": "A CRM to collect customer feedback and ratings, import Typeform responses and alert the team on Slack",
+  "vertical": "business",
+  "theme": {
+    "accent": "violet"
+  },
+  "currency": "USD",
+  "stack": {
+    "framework": "vite-react",
+    "styling": "tailwind",
+    "icons": "lucide"
+  },
+  "dataLayer": "local",
+  "modules": [
+    {
+      "id": "contacts",
+      "label": "Contacts",
+      "description": "Everyone you sell to or serve, with status and source.",
+      "icon": "users",
+      "entities": [
+        {
+          "key": "contacts",
+          "label": "Contact",
+          "plural": "Contacts",
+          "icon": "users",
+          "titleField": "name",
+          "boardField": "status",
+          "fields": [
+            {
+              "key": "name",
+              "label": "Name",
+              "type": "text"
+            },
+            {
+              "key": "email",
+              "label": "Email",
+              "type": "email"
+            },
+            {
+              "key": "phone",
+              "label": "Phone",
+              "type": "phone"
+            },
+            {
+              "key": "company",
+              "label": "Company",
+              "type": "text"
+            },
+            {
+              "key": "source",
+              "label": "Source",
+              "type": "select",
+              "options": [
+                "Website",
+                "Referral",
+                "WhatsApp",
+                "Email",
+                "Ads",
+                "Walk-in"
+              ]
+            },
+            {
+              "key": "status",
+              "label": "Status",
+              "type": "status",
+              "options": [
+                "New",
+                "Contacted",
+                "Qualified",
+                "Customer",
+                "Lost"
+              ]
+            },
+            {
+              "key": "notes",
+              "label": "Notes",
+              "type": "longtext",
+              "hidden": true
+            },
+            {
+              "key": "createdAt",
+              "label": "Created",
+              "type": "date",
+              "default": "today"
+            }
+          ],
+          "actions": [
+            {
+              "id": "contact.pushToCrm",
+              "label": "Sync to CRM",
+              "slots": [
+                "crm"
+              ],
+              "scope": "row"
+            }
+          ],
+          "seedCount": 14
+        }
+      ],
+      "stats": [
+        {
+          "label": "Contacts",
+          "entity": "contacts",
+          "agg": "count",
+          "format": "number"
+        },
+        {
+          "label": "New this stage",
+          "entity": "contacts",
+          "agg": "count",
+          "where": {
+            "field": "status",
+            "in": [
+              "New"
+            ]
+          },
+          "format": "number"
+        },
+        {
+          "label": "Customers",
+          "entity": "contacts",
+          "agg": "count",
+          "where": {
+            "field": "status",
+            "in": [
+              "Customer"
+            ]
+          },
+          "format": "number"
+        }
+      ]
+    },
+    {
+      "id": "feedback",
+      "label": "Feedback",
+      "description": "Collect and triage customer feedback.",
+      "icon": "star",
+      "entities": [
+        {
+          "key": "feedback",
+          "label": "Feedback",
+          "plural": "Feedback",
+          "icon": "star",
+          "titleField": "customer",
+          "boardField": "status",
+          "fields": [
+            {
+              "key": "customer",
+              "label": "Customer",
+              "type": "text"
+            },
+            {
+              "key": "channel",
+              "label": "Channel",
+              "type": "select",
+              "options": [
+                "Email",
+                "WhatsApp",
+                "Web form",
+                "Phone",
+                "In person"
+              ]
+            },
+            {
+              "key": "rating",
+              "label": "Rating",
+              "type": "rating"
+            },
+            {
+              "key": "sentiment",
+              "label": "Sentiment",
+              "type": "status",
+              "options": [
+                "Positive",
+                "Neutral",
+                "Negative"
+              ]
+            },
+            {
+              "key": "comment",
+              "label": "Comment",
+              "type": "longtext"
+            },
+            {
+              "key": "status",
+              "label": "Status",
+              "type": "status",
+              "options": [
+                "New",
+                "Reviewed",
+                "Actioned"
+              ]
+            },
+            {
+              "key": "receivedAt",
+              "label": "Received",
+              "type": "date",
+              "default": "today"
+            }
+          ],
+          "actions": [
+            {
+              "id": "feedback.notifyTeam",
+              "label": "Notify team",
+              "slots": [
+                "notify"
+              ],
+              "scope": "row"
+            },
+            {
+              "id": "feedback.importForm",
+              "label": "Import form responses",
+              "slots": [
+                "forms"
+              ],
+              "scope": "table"
+            }
+          ],
+          "seedCount": 12
+        }
+      ],
+      "stats": [
+        {
+          "label": "Responses",
+          "entity": "feedback",
+          "agg": "count",
+          "format": "number"
+        },
+        {
+          "label": "Average rating",
+          "entity": "feedback",
+          "agg": "avg",
+          "field": "rating",
+          "format": "decimal"
+        },
+        {
+          "label": "Negative",
+          "entity": "feedback",
+          "agg": "count",
+          "where": {
+            "field": "sentiment",
+            "in": [
+              "Negative"
+            ]
+          },
+          "format": "number"
+        }
+      ]
+    }
+  ],
+  "tools": [
+    "slack",
+    "typeform"
+  ],
+  "primaryTools": {
+    "notify": "slack",
+    "forms": "typeform"
+  }
+}

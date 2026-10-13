@@ -1,0 +1,273 @@
+{
+  "version": 1,
+  "name": "Business CRM",
+  "slug": "business-crm",
+  "description": "A CRM for emailing my leads with campaigns, using Resend",
+  "vertical": "business",
+  "theme": {
+    "accent": "violet"
+  },
+  "currency": "USD",
+  "stack": {
+    "framework": "vite-react",
+    "styling": "tailwind",
+    "icons": "lucide"
+  },
+  "dataLayer": "local",
+  "modules": [
+    {
+      "id": "contacts",
+      "label": "Contacts",
+      "description": "Everyone you sell to or serve, with status and source.",
+      "icon": "users",
+      "entities": [
+        {
+          "key": "contacts",
+          "label": "Contact",
+          "plural": "Contacts",
+          "icon": "users",
+          "titleField": "name",
+          "boardField": "status",
+          "fields": [
+            {
+              "key": "name",
+              "label": "Name",
+              "type": "text"
+            },
+            {
+              "key": "email",
+              "label": "Email",
+              "type": "email"
+            },
+            {
+              "key": "phone",
+              "label": "Phone",
+              "type": "phone"
+            },
+            {
+              "key": "company",
+              "label": "Company",
+              "type": "text"
+            },
+            {
+              "key": "source",
+              "label": "Source",
+              "type": "select",
+              "options": [
+                "Website",
+                "Referral",
+                "WhatsApp",
+                "Email",
+                "Ads",
+                "Walk-in"
+              ]
+            },
+            {
+              "key": "status",
+              "label": "Status",
+              "type": "status",
+              "options": [
+                "New",
+                "Contacted",
+                "Qualified",
+                "Customer",
+                "Lost"
+              ]
+            },
+            {
+              "key": "marketingOptIn",
+              "label": "Marketing opt-in",
+              "type": "boolean"
+            },
+            {
+              "key": "notes",
+              "label": "Notes",
+              "type": "longtext",
+              "hidden": true
+            },
+            {
+              "key": "createdAt",
+              "label": "Created",
+              "type": "date",
+              "default": "today"
+            }
+          ],
+          "actions": [
+            {
+              "id": "contact.pushToCrm",
+              "label": "Sync to CRM",
+              "slots": [
+                "crm"
+              ],
+              "scope": "row"
+            }
+          ],
+          "seedCount": 14
+        }
+      ],
+      "stats": [
+        {
+          "label": "Contacts",
+          "entity": "contacts",
+          "agg": "count",
+          "format": "number"
+        },
+        {
+          "label": "New this stage",
+          "entity": "contacts",
+          "agg": "count",
+          "where": {
+            "field": "status",
+            "in": [
+              "New"
+            ]
+          },
+          "format": "number"
+        },
+        {
+          "label": "Customers",
+          "entity": "contacts",
+          "agg": "count",
+          "where": {
+            "field": "status",
+            "in": [
+              "Customer"
+            ]
+          },
+          "format": "number"
+        }
+      ]
+    },
+    {
+      "id": "email_campaigns",
+      "label": "Email campaigns",
+      "description": "Compose and send email campaigns to a contact segment.",
+      "icon": "mail",
+      "entities": [
+        {
+          "key": "emailCampaigns",
+          "label": "Email campaign",
+          "plural": "Email campaigns",
+          "icon": "mail",
+          "titleField": "name",
+          "boardField": "status",
+          "fields": [
+            {
+              "key": "name",
+              "label": "Campaign",
+              "type": "text",
+              "samples": [
+                "Spring offer",
+                "Product update",
+                "Re-engagement",
+                "Welcome series",
+                "Holiday notice"
+              ]
+            },
+            {
+              "key": "subject",
+              "label": "Subject",
+              "type": "text"
+            },
+            {
+              "key": "audience",
+              "label": "Audience",
+              "type": "select",
+              "options": [
+                "All contacts",
+                "New",
+                "Contacted",
+                "Qualified",
+                "Customer"
+              ]
+            },
+            {
+              "key": "body",
+              "label": "Body",
+              "type": "longtext",
+              "hidden": true
+            },
+            {
+              "key": "status",
+              "label": "Status",
+              "type": "status",
+              "options": [
+                "Draft",
+                "Scheduled",
+                "Sent"
+              ]
+            },
+            {
+              "key": "scheduledFor",
+              "label": "Scheduled for",
+              "type": "datetime"
+            },
+            {
+              "key": "sent",
+              "label": "Sent",
+              "type": "number",
+              "default": "0"
+            },
+            {
+              "key": "failed",
+              "label": "Failed",
+              "type": "number",
+              "default": "0"
+            },
+            {
+              "key": "opened",
+              "label": "Opened",
+              "type": "number",
+              "default": "0"
+            },
+            {
+              "key": "clicked",
+              "label": "Clicked",
+              "type": "number",
+              "default": "0"
+            }
+          ],
+          "actions": [
+            {
+              "id": "campaign.sendEmail",
+              "label": "Send now",
+              "slots": [
+                "email"
+              ],
+              "scope": "row",
+              "core": true
+            }
+          ],
+          "seedCount": 8
+        }
+      ],
+      "stats": [
+        {
+          "label": "Campaigns sent",
+          "entity": "emailCampaigns",
+          "agg": "count",
+          "where": {
+            "field": "status",
+            "in": [
+              "Sent"
+            ]
+          },
+          "format": "number"
+        },
+        {
+          "label": "Emails sent",
+          "entity": "emailCampaigns",
+          "agg": "sum",
+          "field": "sent",
+          "format": "number"
+        }
+      ]
+    }
+  ],
+  "tools": [
+    "resend"
+  ],
+  "primaryTools": {
+    "email": "resend"
+  }
+}

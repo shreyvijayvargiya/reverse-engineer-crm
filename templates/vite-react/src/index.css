@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 224 20% 12%;
+  --card: 0 0% 100%;
+  --muted: 220 16% 96%;
+  --muted-foreground: 220 9% 42%;
+  --border: 220 14% 90%;
+  --primary: 238 84% 60%;
+  --primary-foreground: 0 0% 100%;
+  --danger: 0 72% 51%;
+}
+.dark {
+  --background: 224 22% 8%;
+  --foreground: 220 14% 94%;
+  --card: 224 20% 11%;
+  --muted: 224 16% 15%;
+  --muted-foreground: 220 10% 62%;
+  --border: 224 14% 20%;
+  --danger: 0 72% 60%;
+}
+[data-accent="indigo"] { --primary: 238 84% 60%; }
+[data-accent="emerald"] { --primary: 160 84% 33%; }
+[data-accent="rose"] { --primary: 346 77% 50%; }
+[data-accent="amber"] { --primary: 32 95% 44%; }
+[data-accent="sky"] { --primary: 199 89% 42%; }
+[data-accent="violet"] { --primary: 262 83% 58%; }
+
+html, body, #root { height: 100%; }
+body {
+  @apply bg-background text-foreground antialiased;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}

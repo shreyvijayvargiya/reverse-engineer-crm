@@ -1,0 +1,480 @@
+{
+  "version": 1,
+  "name": "Agency CRM",
+  "slug": "agency-crm",
+  "description": "Invoicing CRM for my agency clients with Stripe payment links",
+  "vertical": "agency",
+  "theme": {
+    "accent": "violet"
+  },
+  "currency": "USD",
+  "stack": {
+    "framework": "vite-react",
+    "styling": "tailwind",
+    "icons": "lucide"
+  },
+  "dataLayer": "local",
+  "modules": [
+    {
+      "id": "contacts",
+      "label": "Clients",
+      "description": "Everyone you sell to or serve, with status and source.",
+      "icon": "users",
+      "entities": [
+        {
+          "key": "contacts",
+          "label": "Client",
+          "plural": "Clients",
+          "icon": "users",
+          "titleField": "name",
+          "boardField": "status",
+          "fields": [
+            {
+              "key": "name",
+              "label": "Name",
+              "type": "text"
+            },
+            {
+              "key": "email",
+              "label": "Email",
+              "type": "email"
+            },
+            {
+              "key": "phone",
+              "label": "Phone",
+              "type": "phone"
+            },
+            {
+              "key": "company",
+              "label": "Company",
+              "type": "text"
+            },
+            {
+              "key": "source",
+              "label": "Source",
+              "type": "select",
+              "options": [
+                "Website",
+                "Referral",
+                "WhatsApp",
+                "Email",
+                "Ads",
+                "Walk-in"
+              ]
+            },
+            {
+              "key": "status",
+              "label": "Status",
+              "type": "status",
+              "options": [
+                "New",
+                "Contacted",
+                "Qualified",
+                "Customer",
+                "Lost"
+              ]
+            },
+            {
+              "key": "notes",
+              "label": "Notes",
+              "type": "longtext",
+              "hidden": true
+            },
+            {
+              "key": "createdAt",
+              "label": "Created",
+              "type": "date",
+              "default": "today"
+            }
+          ],
+          "actions": [
+            {
+              "id": "contact.pushToCrm",
+              "label": "Sync to CRM",
+              "slots": [
+                "crm"
+              ],
+              "scope": "row"
+            }
+          ],
+          "seedCount": 14
+        }
+      ],
+      "stats": [
+        {
+          "label": "Contacts",
+          "entity": "contacts",
+          "agg": "count",
+          "format": "number"
+        },
+        {
+          "label": "New this stage",
+          "entity": "contacts",
+          "agg": "count",
+          "where": {
+            "field": "status",
+            "in": [
+              "New"
+            ]
+          },
+          "format": "number"
+        },
+        {
+          "label": "Customers",
+          "entity": "contacts",
+          "agg": "count",
+          "where": {
+            "field": "status",
+            "in": [
+              "Customer"
+            ]
+          },
+          "format": "number"
+        }
+      ]
+    },
+    {
+      "id": "deals",
+      "label": "Deals",
+      "description": "Pipeline of opportunities by stage.",
+      "icon": "handshake",
+      "entities": [
+        {
+          "key": "deals",
+          "label": "Deal",
+          "plural": "Deals",
+          "icon": "handshake",
+          "titleField": "title",
+          "boardField": "stage",
+          "fields": [
+            {
+              "key": "title",
+              "label": "Deal",
+              "type": "text",
+              "samples": [
+                "Website redesign",
+                "Annual plan",
+                "Onboarding package",
+                "Retainer",
+                "Pilot project",
+                "Enterprise license"
+              ]
+            },
+            {
+              "key": "contact",
+              "label": "Contact",
+              "type": "text"
+            },
+            {
+              "key": "value",
+              "label": "Value",
+              "type": "currency"
+            },
+            {
+              "key": "stage",
+              "label": "Stage",
+              "type": "status",
+              "options": [
+                "Lead",
+                "Qualified",
+                "Proposal",
+                "Negotiation",
+                "Won",
+                "Lost"
+              ]
+            },
+            {
+              "key": "closeDate",
+              "label": "Close date",
+              "type": "date"
+            },
+            {
+              "key": "probability",
+              "label": "Probability %",
+              "type": "number"
+            },
+            {
+              "key": "owner",
+              "label": "Owner",
+              "type": "text"
+            }
+          ],
+          "actions": [],
+          "seedCount": 12
+        }
+      ],
+      "stats": [
+        {
+          "label": "Open pipeline",
+          "entity": "deals",
+          "agg": "sum",
+          "field": "value",
+          "where": {
+            "field": "stage",
+            "notIn": [
+              "Won",
+              "Lost"
+            ]
+          },
+          "format": "currency"
+        },
+        {
+          "label": "Won revenue",
+          "entity": "deals",
+          "agg": "sum",
+          "field": "value",
+          "where": {
+            "field": "stage",
+            "in": [
+              "Won"
+            ]
+          },
+          "format": "currency"
+        },
+        {
+          "label": "Open deals",
+          "entity": "deals",
+          "agg": "count",
+          "where": {
+            "field": "stage",
+            "notIn": [
+              "Won",
+              "Lost"
+            ]
+          },
+          "format": "number"
+        }
+      ]
+    },
+    {
+      "id": "tasks",
+      "label": "Tasks",
+      "description": "Follow-ups and to-dos.",
+      "icon": "check-square",
+      "entities": [
+        {
+          "key": "tasks",
+          "label": "Task",
+          "plural": "Tasks",
+          "icon": "check-square",
+          "titleField": "title",
+          "boardField": "status",
+          "fields": [
+            {
+              "key": "title",
+              "label": "Task",
+              "type": "text",
+              "samples": [
+                "Call back",
+                "Send proposal",
+                "Update records",
+                "Review contract",
+                "Schedule demo",
+                "Chase payment"
+              ]
+            },
+            {
+              "key": "due",
+              "label": "Due",
+              "type": "date"
+            },
+            {
+              "key": "priority",
+              "label": "Priority",
+              "type": "select",
+              "options": [
+                "Low",
+                "Medium",
+                "High"
+              ]
+            },
+            {
+              "key": "status",
+              "label": "Status",
+              "type": "status",
+              "options": [
+                "To do",
+                "In progress",
+                "Done"
+              ]
+            },
+            {
+              "key": "assignee",
+              "label": "Assignee",
+              "type": "text"
+            },
+            {
+              "key": "related",
+              "label": "Related to",
+              "type": "text"
+            }
+          ],
+          "actions": [],
+          "seedCount": 10
+        }
+      ],
+      "stats": [
+        {
+          "label": "Open tasks",
+          "entity": "tasks",
+          "agg": "count",
+          "where": {
+            "field": "status",
+            "notIn": [
+              "Done"
+            ]
+          },
+          "format": "number"
+        },
+        {
+          "label": "High priority",
+          "entity": "tasks",
+          "agg": "count",
+          "where": {
+            "field": "priority",
+            "in": [
+              "High"
+            ]
+          },
+          "format": "number"
+        }
+      ]
+    },
+    {
+      "id": "invoices",
+      "label": "Invoices",
+      "description": "Create, send and track invoices.",
+      "icon": "file-text",
+      "entities": [
+        {
+          "key": "invoices",
+          "label": "Invoice",
+          "plural": "Invoices",
+          "icon": "file-text",
+          "titleField": "number",
+          "boardField": "status",
+          "fields": [
+            {
+              "key": "number",
+              "label": "Number",
+              "type": "text"
+            },
+            {
+              "key": "client",
+              "label": "Client",
+              "type": "text"
+            },
+            {
+              "key": "email",
+              "label": "Client email",
+              "type": "email"
+            },
+            {
+              "key": "amount",
+              "label": "Amount",
+              "type": "currency"
+            },
+            {
+              "key": "issueDate",
+              "label": "Issued",
+              "type": "date",
+              "default": "today"
+            },
+            {
+              "key": "dueDate",
+              "label": "Due",
+              "type": "date"
+            },
+            {
+              "key": "status",
+              "label": "Status",
+              "type": "status",
+              "options": [
+                "Draft",
+                "Sent",
+                "Paid",
+                "Overdue"
+              ]
+            },
+            {
+              "key": "paymentLink",
+              "label": "Payment link",
+              "type": "url",
+              "hidden": true
+            },
+            {
+              "key": "notes",
+              "label": "Notes",
+              "type": "longtext",
+              "hidden": true
+            }
+          ],
+          "actions": [
+            {
+              "id": "invoice.paymentLink",
+              "label": "Create payment link",
+              "slots": [
+                "payments"
+              ],
+              "scope": "row"
+            },
+            {
+              "id": "invoice.markPaid",
+              "label": "Mark paid",
+              "slots": [],
+              "scope": "row"
+            }
+          ],
+          "seedCount": 12
+        }
+      ],
+      "stats": [
+        {
+          "label": "Outstanding",
+          "entity": "invoices",
+          "agg": "sum",
+          "field": "amount",
+          "where": {
+            "field": "status",
+            "in": [
+              "Sent",
+              "Overdue"
+            ]
+          },
+          "format": "currency"
+        },
+        {
+          "label": "Paid",
+          "entity": "invoices",
+          "agg": "sum",
+          "field": "amount",
+          "where": {
+            "field": "status",
+            "in": [
+              "Paid"
+            ]
+          },
+          "format": "currency"
+        },
+        {
+          "label": "Overdue invoices",
+          "entity": "invoices",
+          "agg": "count",
+          "where": {
+            "field": "status",
+            "in": [
+              "Overdue"
+            ]
+          },
+          "format": "number"
+        }
+      ]
+    }
+  ],
+  "tools": [
+    "stripe"
+  ],
+  "primaryTools": {
+    "payments": "stripe"
+  }
+}

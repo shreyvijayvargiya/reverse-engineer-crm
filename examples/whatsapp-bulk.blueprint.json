@@ -1,0 +1,276 @@
+{
+  "version": 1,
+  "name": "Business CRM",
+  "slug": "business-crm",
+  "description": "WhatsApp bulk messaging to my customers with opt-in contacts",
+  "vertical": "business",
+  "theme": {
+    "accent": "violet"
+  },
+  "currency": "USD",
+  "stack": {
+    "framework": "vite-react",
+    "styling": "tailwind",
+    "icons": "lucide"
+  },
+  "dataLayer": "local",
+  "modules": [
+    {
+      "id": "contacts",
+      "label": "Contacts",
+      "description": "Everyone you sell to or serve, with status and source.",
+      "icon": "users",
+      "entities": [
+        {
+          "key": "contacts",
+          "label": "Contact",
+          "plural": "Contacts",
+          "icon": "users",
+          "titleField": "name",
+          "boardField": "status",
+          "fields": [
+            {
+              "key": "name",
+              "label": "Name",
+              "type": "text"
+            },
+            {
+              "key": "email",
+              "label": "Email",
+              "type": "email"
+            },
+            {
+              "key": "phone",
+              "label": "Phone",
+              "type": "phone"
+            },
+            {
+              "key": "company",
+              "label": "Company",
+              "type": "text"
+            },
+            {
+              "key": "source",
+              "label": "Source",
+              "type": "select",
+              "options": [
+                "Website",
+                "Referral",
+                "WhatsApp",
+                "Email",
+                "Ads",
+                "Walk-in"
+              ]
+            },
+            {
+              "key": "status",
+              "label": "Status",
+              "type": "status",
+              "options": [
+                "New",
+                "Contacted",
+                "Qualified",
+                "Customer",
+                "Lost"
+              ]
+            },
+            {
+              "key": "marketingOptIn",
+              "label": "Marketing opt-in",
+              "type": "boolean"
+            },
+            {
+              "key": "notes",
+              "label": "Notes",
+              "type": "longtext",
+              "hidden": true
+            },
+            {
+              "key": "createdAt",
+              "label": "Created",
+              "type": "date",
+              "default": "today"
+            }
+          ],
+          "actions": [
+            {
+              "id": "contact.pushToCrm",
+              "label": "Sync to CRM",
+              "slots": [
+                "crm"
+              ],
+              "scope": "row"
+            }
+          ],
+          "seedCount": 14
+        }
+      ],
+      "stats": [
+        {
+          "label": "Contacts",
+          "entity": "contacts",
+          "agg": "count",
+          "format": "number"
+        },
+        {
+          "label": "New this stage",
+          "entity": "contacts",
+          "agg": "count",
+          "where": {
+            "field": "status",
+            "in": [
+              "New"
+            ]
+          },
+          "format": "number"
+        },
+        {
+          "label": "Customers",
+          "entity": "contacts",
+          "agg": "count",
+          "where": {
+            "field": "status",
+            "in": [
+              "Customer"
+            ]
+          },
+          "format": "number"
+        }
+      ]
+    },
+    {
+      "id": "whatsapp_bulk",
+      "label": "WhatsApp broadcasts",
+      "description": "Compose and send bulk messages to opted-in contacts.",
+      "icon": "message-circle",
+      "entities": [
+        {
+          "key": "broadcasts",
+          "label": "Broadcast",
+          "plural": "WhatsApp broadcasts",
+          "icon": "message-circle",
+          "titleField": "name",
+          "boardField": "status",
+          "fields": [
+            {
+              "key": "name",
+              "label": "Broadcast",
+              "type": "text",
+              "samples": [
+                "Appointment reminder",
+                "Weekend offer",
+                "New arrivals",
+                "Payment reminder",
+                "Feedback request"
+              ]
+            },
+            {
+              "key": "message",
+              "label": "Message",
+              "type": "longtext"
+            },
+            {
+              "key": "audience",
+              "label": "Audience",
+              "type": "select",
+              "options": [
+                "All contacts",
+                "New",
+                "Contacted",
+                "Qualified",
+                "Customer"
+              ]
+            },
+            {
+              "key": "status",
+              "label": "Status",
+              "type": "status",
+              "options": [
+                "Draft",
+                "Scheduled",
+                "Sent",
+                "Failed"
+              ]
+            },
+            {
+              "key": "sent",
+              "label": "Sent",
+              "type": "number",
+              "default": "0"
+            },
+            {
+              "key": "failed",
+              "label": "Failed",
+              "type": "number",
+              "default": "0"
+            },
+            {
+              "key": "delivered",
+              "label": "Delivered",
+              "type": "number",
+              "default": "0"
+            },
+            {
+              "key": "read",
+              "label": "Read",
+              "type": "number",
+              "default": "0"
+            },
+            {
+              "key": "sentAt",
+              "label": "Sent at",
+              "type": "datetime"
+            }
+          ],
+          "actions": [
+            {
+              "id": "broadcast.send",
+              "label": "Send now",
+              "slots": [
+                "whatsapp",
+                "sms"
+              ],
+              "scope": "row",
+              "core": true
+            }
+          ],
+          "seedCount": 8
+        }
+      ],
+      "stats": [
+        {
+          "label": "Broadcasts sent",
+          "entity": "broadcasts",
+          "agg": "count",
+          "where": {
+            "field": "status",
+            "in": [
+              "Sent"
+            ]
+          },
+          "format": "number"
+        },
+        {
+          "label": "Messages sent",
+          "entity": "broadcasts",
+          "agg": "sum",
+          "field": "sent",
+          "format": "number"
+        },
+        {
+          "label": "Failed",
+          "entity": "broadcasts",
+          "agg": "sum",
+          "field": "failed",
+          "format": "number"
+        }
+      ]
+    }
+  ],
+  "tools": [
+    "whatsapp-cloud"
+  ],
+  "primaryTools": {
+    "whatsapp": "whatsapp-cloud"
+  }
+}

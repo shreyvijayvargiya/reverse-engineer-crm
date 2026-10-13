@@ -1,0 +1,182 @@
+{
+  "version": 1,
+  "name": "Scrapers Dashboard",
+  "slug": "scrapers-dashboard",
+  "description": "I need a scraping agents dashboard to track competitor prices and job listings",
+  "vertical": "business",
+  "theme": {
+    "accent": "sky"
+  },
+  "currency": "USD",
+  "stack": {
+    "framework": "vite-react",
+    "styling": "tailwind",
+    "icons": "lucide"
+  },
+  "dataLayer": "local",
+  "modules": [
+    {
+      "id": "scrapers",
+      "label": "Scrapers",
+      "description": "Define scraping jobs, run them, and browse results.",
+      "icon": "globe",
+      "entities": [
+        {
+          "key": "scrapers",
+          "label": "Scraper",
+          "plural": "Scrapers",
+          "icon": "globe",
+          "titleField": "name",
+          "boardField": "status",
+          "fields": [
+            {
+              "key": "name",
+              "label": "Job",
+              "type": "text",
+              "samples": [
+                "Competitor prices",
+                "Job board leads",
+                "Directory listings",
+                "Product catalog",
+                "Event listings"
+              ]
+            },
+            {
+              "key": "targetUrl",
+              "label": "Target URL",
+              "type": "url"
+            },
+            {
+              "key": "selector",
+              "label": "Selector / instruction",
+              "type": "text",
+              "hidden": true
+            },
+            {
+              "key": "schedule",
+              "label": "Schedule",
+              "type": "select",
+              "options": [
+                "Manual",
+                "Hourly",
+                "Daily",
+                "Weekly"
+              ]
+            },
+            {
+              "key": "status",
+              "label": "Status",
+              "type": "status",
+              "options": [
+                "Idle",
+                "Running",
+                "Done",
+                "Failed"
+              ]
+            },
+            {
+              "key": "lastRun",
+              "label": "Last run",
+              "type": "datetime"
+            },
+            {
+              "key": "records",
+              "label": "Records",
+              "type": "number",
+              "default": "0"
+            }
+          ],
+          "actions": [
+            {
+              "id": "scraper.run",
+              "label": "Run now",
+              "slots": [
+                "scraping"
+              ],
+              "scope": "row",
+              "core": true
+            }
+          ],
+          "seedCount": 6
+        },
+        {
+          "key": "scrapeResults",
+          "label": "Result",
+          "plural": "Results",
+          "icon": "database",
+          "titleField": "title",
+          "fields": [
+            {
+              "key": "job",
+              "label": "Job",
+              "type": "text"
+            },
+            {
+              "key": "title",
+              "label": "Title",
+              "type": "text",
+              "samples": [
+                "Acme Widget Pro",
+                "Senior Designer",
+                "City Dental Group",
+                "Summer Sale Tickets",
+                "Blue Ceramic Mug"
+              ]
+            },
+            {
+              "key": "sourceUrl",
+              "label": "Source",
+              "type": "url"
+            },
+            {
+              "key": "data",
+              "label": "Data",
+              "type": "longtext",
+              "hidden": true
+            },
+            {
+              "key": "scrapedAt",
+              "label": "Scraped",
+              "type": "datetime"
+            }
+          ],
+          "actions": [],
+          "seedCount": 16
+        }
+      ],
+      "stats": [
+        {
+          "label": "Scraper jobs",
+          "entity": "scrapers",
+          "agg": "count",
+          "format": "number"
+        },
+        {
+          "label": "Records collected",
+          "entity": "scrapers",
+          "agg": "sum",
+          "field": "records",
+          "format": "number"
+        },
+        {
+          "label": "Failed jobs",
+          "entity": "scrapers",
+          "agg": "count",
+          "where": {
+            "field": "status",
+            "in": [
+              "Failed"
+            ]
+          },
+          "format": "number"
+        }
+      ]
+    }
+  ],
+  "tools": [
+    "apify"
+  ],
+  "primaryTools": {
+    "scraping": "apify"
+  }
+}

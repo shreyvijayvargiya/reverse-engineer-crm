@@ -1,0 +1,660 @@
+{
+  "version": 1,
+  "name": "Clinic CRM",
+  "slug": "clinic-crm",
+  "description": "I run a dental clinic. I need appointments, invoices with Stripe payment links, WhatsApp reminders and patient feedback.",
+  "vertical": "clinic",
+  "theme": {
+    "accent": "sky"
+  },
+  "currency": "USD",
+  "stack": {
+    "framework": "vite-react",
+    "styling": "tailwind",
+    "icons": "lucide"
+  },
+  "dataLayer": "local",
+  "modules": [
+    {
+      "id": "contacts",
+      "label": "Patients",
+      "description": "Everyone you sell to or serve, with status and source.",
+      "icon": "users",
+      "entities": [
+        {
+          "key": "contacts",
+          "label": "Patient",
+          "plural": "Patients",
+          "icon": "users",
+          "titleField": "name",
+          "boardField": "status",
+          "fields": [
+            {
+              "key": "name",
+              "label": "Name",
+              "type": "text"
+            },
+            {
+              "key": "email",
+              "label": "Email",
+              "type": "email"
+            },
+            {
+              "key": "phone",
+              "label": "Phone",
+              "type": "phone"
+            },
+            {
+              "key": "company",
+              "label": "Company",
+              "type": "text"
+            },
+            {
+              "key": "source",
+              "label": "Source",
+              "type": "select",
+              "options": [
+                "Website",
+                "Referral",
+                "WhatsApp",
+                "Email",
+                "Ads",
+                "Walk-in"
+              ]
+            },
+            {
+              "key": "status",
+              "label": "Status",
+              "type": "status",
+              "options": [
+                "New",
+                "Contacted",
+                "Qualified",
+                "Customer",
+                "Lost"
+              ]
+            },
+            {
+              "key": "marketingOptIn",
+              "label": "Marketing opt-in",
+              "type": "boolean"
+            },
+            {
+              "key": "notes",
+              "label": "Notes",
+              "type": "longtext",
+              "hidden": true
+            },
+            {
+              "key": "createdAt",
+              "label": "Created",
+              "type": "date",
+              "default": "today"
+            },
+            {
+              "key": "dateOfBirth",
+              "label": "Date of birth",
+              "type": "date"
+            },
+            {
+              "key": "insuranceProvider",
+              "label": "Insurance provider",
+              "type": "text"
+            }
+          ],
+          "actions": [
+            {
+              "id": "contact.pushToCrm",
+              "label": "Sync to CRM",
+              "slots": [
+                "crm"
+              ],
+              "scope": "row"
+            }
+          ],
+          "seedCount": 14
+        }
+      ],
+      "stats": [
+        {
+          "label": "Contacts",
+          "entity": "contacts",
+          "agg": "count",
+          "format": "number"
+        },
+        {
+          "label": "New this stage",
+          "entity": "contacts",
+          "agg": "count",
+          "where": {
+            "field": "status",
+            "in": [
+              "New"
+            ]
+          },
+          "format": "number"
+        },
+        {
+          "label": "Customers",
+          "entity": "contacts",
+          "agg": "count",
+          "where": {
+            "field": "status",
+            "in": [
+              "Customer"
+            ]
+          },
+          "format": "number"
+        }
+      ]
+    },
+    {
+      "id": "appointments",
+      "label": "Appointments",
+      "description": "Bookings with reminders and calendar sync.",
+      "icon": "calendar",
+      "entities": [
+        {
+          "key": "appointments",
+          "label": "Appointment",
+          "plural": "Appointments",
+          "icon": "calendar",
+          "titleField": "client",
+          "boardField": "status",
+          "fields": [
+            {
+              "key": "client",
+              "label": "Client",
+              "type": "text"
+            },
+            {
+              "key": "email",
+              "label": "Email",
+              "type": "email",
+              "hidden": true
+            },
+            {
+              "key": "phone",
+              "label": "Phone",
+              "type": "phone",
+              "hidden": true
+            },
+            {
+              "key": "service",
+              "label": "Service",
+              "type": "text",
+              "samples": [
+                "Consultation",
+                "Cleaning",
+                "Follow-up",
+                "Training session",
+                "Strategy call",
+                "Check-up"
+              ]
+            },
+            {
+              "key": "start",
+              "label": "Start",
+              "type": "datetime"
+            },
+            {
+              "key": "durationMin",
+              "label": "Minutes",
+              "type": "number",
+              "default": "30"
+            },
+            {
+              "key": "status",
+              "label": "Status",
+              "type": "status",
+              "options": [
+                "Booked",
+                "Confirmed",
+                "Completed",
+                "No-show",
+                "Cancelled"
+              ]
+            },
+            {
+              "key": "notes",
+              "label": "Notes",
+              "type": "longtext",
+              "hidden": true
+            }
+          ],
+          "actions": [
+            {
+              "id": "appointment.remind",
+              "label": "Send reminder",
+              "slots": [
+                "whatsapp",
+                "sms",
+                "email"
+              ],
+              "scope": "row"
+            },
+            {
+              "id": "appointment.addToCalendar",
+              "label": "Add to calendar",
+              "slots": [
+                "calendar"
+              ],
+              "scope": "row"
+            }
+          ],
+          "seedCount": 12
+        }
+      ],
+      "stats": [
+        {
+          "label": "Upcoming",
+          "entity": "appointments",
+          "agg": "count",
+          "where": {
+            "field": "status",
+            "in": [
+              "Booked",
+              "Confirmed"
+            ]
+          },
+          "format": "number"
+        },
+        {
+          "label": "No-shows",
+          "entity": "appointments",
+          "agg": "count",
+          "where": {
+            "field": "status",
+            "in": [
+              "No-show"
+            ]
+          },
+          "format": "number"
+        }
+      ]
+    },
+    {
+      "id": "invoices",
+      "label": "Invoices",
+      "description": "Create, send and track invoices.",
+      "icon": "file-text",
+      "entities": [
+        {
+          "key": "invoices",
+          "label": "Invoice",
+          "plural": "Invoices",
+          "icon": "file-text",
+          "titleField": "number",
+          "boardField": "status",
+          "fields": [
+            {
+              "key": "number",
+              "label": "Number",
+              "type": "text"
+            },
+            {
+              "key": "client",
+              "label": "Client",
+              "type": "text"
+            },
+            {
+              "key": "email",
+              "label": "Client email",
+              "type": "email"
+            },
+            {
+              "key": "amount",
+              "label": "Amount",
+              "type": "currency"
+            },
+            {
+              "key": "issueDate",
+              "label": "Issued",
+              "type": "date",
+              "default": "today"
+            },
+            {
+              "key": "dueDate",
+              "label": "Due",
+              "type": "date"
+            },
+            {
+              "key": "status",
+              "label": "Status",
+              "type": "status",
+              "options": [
+                "Draft",
+                "Sent",
+                "Paid",
+                "Overdue"
+              ]
+            },
+            {
+              "key": "paymentLink",
+              "label": "Payment link",
+              "type": "url",
+              "hidden": true
+            },
+            {
+              "key": "notes",
+              "label": "Notes",
+              "type": "longtext",
+              "hidden": true
+            }
+          ],
+          "actions": [
+            {
+              "id": "invoice.paymentLink",
+              "label": "Create payment link",
+              "slots": [
+                "payments"
+              ],
+              "scope": "row"
+            },
+            {
+              "id": "invoice.markPaid",
+              "label": "Mark paid",
+              "slots": [],
+              "scope": "row"
+            }
+          ],
+          "seedCount": 12
+        }
+      ],
+      "stats": [
+        {
+          "label": "Outstanding",
+          "entity": "invoices",
+          "agg": "sum",
+          "field": "amount",
+          "where": {
+            "field": "status",
+            "in": [
+              "Sent",
+              "Overdue"
+            ]
+          },
+          "format": "currency"
+        },
+        {
+          "label": "Paid",
+          "entity": "invoices",
+          "agg": "sum",
+          "field": "amount",
+          "where": {
+            "field": "status",
+            "in": [
+              "Paid"
+            ]
+          },
+          "format": "currency"
+        },
+        {
+          "label": "Overdue invoices",
+          "entity": "invoices",
+          "agg": "count",
+          "where": {
+            "field": "status",
+            "in": [
+              "Overdue"
+            ]
+          },
+          "format": "number"
+        }
+      ]
+    },
+    {
+      "id": "whatsapp_bulk",
+      "label": "WhatsApp broadcasts",
+      "description": "Compose and send bulk messages to opted-in contacts.",
+      "icon": "message-circle",
+      "entities": [
+        {
+          "key": "broadcasts",
+          "label": "Broadcast",
+          "plural": "WhatsApp broadcasts",
+          "icon": "message-circle",
+          "titleField": "name",
+          "boardField": "status",
+          "fields": [
+            {
+              "key": "name",
+              "label": "Broadcast",
+              "type": "text",
+              "samples": [
+                "Appointment reminder",
+                "Weekend offer",
+                "New arrivals",
+                "Payment reminder",
+                "Feedback request"
+              ]
+            },
+            {
+              "key": "message",
+              "label": "Message",
+              "type": "longtext"
+            },
+            {
+              "key": "audience",
+              "label": "Audience",
+              "type": "select",
+              "options": [
+                "All contacts",
+                "New",
+                "Contacted",
+                "Qualified",
+                "Customer"
+              ]
+            },
+            {
+              "key": "status",
+              "label": "Status",
+              "type": "status",
+              "options": [
+                "Draft",
+                "Scheduled",
+                "Sent",
+                "Failed"
+              ]
+            },
+            {
+              "key": "sent",
+              "label": "Sent",
+              "type": "number",
+              "default": "0"
+            },
+            {
+              "key": "failed",
+              "label": "Failed",
+              "type": "number",
+              "default": "0"
+            },
+            {
+              "key": "delivered",
+              "label": "Delivered",
+              "type": "number",
+              "default": "0"
+            },
+            {
+              "key": "read",
+              "label": "Read",
+              "type": "number",
+              "default": "0"
+            },
+            {
+              "key": "sentAt",
+              "label": "Sent at",
+              "type": "datetime"
+            }
+          ],
+          "actions": [
+            {
+              "id": "broadcast.send",
+              "label": "Send now",
+              "slots": [
+                "whatsapp",
+                "sms"
+              ],
+              "scope": "row",
+              "core": true
+            }
+          ],
+          "seedCount": 8
+        }
+      ],
+      "stats": [
+        {
+          "label": "Broadcasts sent",
+          "entity": "broadcasts",
+          "agg": "count",
+          "where": {
+            "field": "status",
+            "in": [
+              "Sent"
+            ]
+          },
+          "format": "number"
+        },
+        {
+          "label": "Messages sent",
+          "entity": "broadcasts",
+          "agg": "sum",
+          "field": "sent",
+          "format": "number"
+        },
+        {
+          "label": "Failed",
+          "entity": "broadcasts",
+          "agg": "sum",
+          "field": "failed",
+          "format": "number"
+        }
+      ]
+    },
+    {
+      "id": "feedback",
+      "label": "Feedback",
+      "description": "Collect and triage customer feedback.",
+      "icon": "star",
+      "entities": [
+        {
+          "key": "feedback",
+          "label": "Feedback",
+          "plural": "Feedback",
+          "icon": "star",
+          "titleField": "customer",
+          "boardField": "status",
+          "fields": [
+            {
+              "key": "customer",
+              "label": "Customer",
+              "type": "text"
+            },
+            {
+              "key": "channel",
+              "label": "Channel",
+              "type": "select",
+              "options": [
+                "Email",
+                "WhatsApp",
+                "Web form",
+                "Phone",
+                "In person"
+              ]
+            },
+            {
+              "key": "rating",
+              "label": "Rating",
+              "type": "rating"
+            },
+            {
+              "key": "sentiment",
+              "label": "Sentiment",
+              "type": "status",
+              "options": [
+                "Positive",
+                "Neutral",
+                "Negative"
+              ]
+            },
+            {
+              "key": "comment",
+              "label": "Comment",
+              "type": "longtext"
+            },
+            {
+              "key": "status",
+              "label": "Status",
+              "type": "status",
+              "options": [
+                "New",
+                "Reviewed",
+                "Actioned"
+              ]
+            },
+            {
+              "key": "receivedAt",
+              "label": "Received",
+              "type": "date",
+              "default": "today"
+            }
+          ],
+          "actions": [
+            {
+              "id": "feedback.notifyTeam",
+              "label": "Notify team",
+              "slots": [
+                "notify"
+              ],
+              "scope": "row"
+            },
+            {
+              "id": "feedback.importForm",
+              "label": "Import form responses",
+              "slots": [
+                "forms"
+              ],
+              "scope": "table"
+            }
+          ],
+          "seedCount": 12
+        }
+      ],
+      "stats": [
+        {
+          "label": "Responses",
+          "entity": "feedback",
+          "agg": "count",
+          "format": "number"
+        },
+        {
+          "label": "Average rating",
+          "entity": "feedback",
+          "agg": "avg",
+          "field": "rating",
+          "format": "decimal"
+        },
+        {
+          "label": "Negative",
+          "entity": "feedback",
+          "agg": "count",
+          "where": {
+            "field": "sentiment",
+            "in": [
+              "Negative"
+            ]
+          },
+          "format": "number"
+        }
+      ]
+    }
+  ],
+  "tools": [
+    "stripe",
+    "whatsapp-cloud"
+  ],
+  "primaryTools": {
+    "payments": "stripe",
+    "whatsapp": "whatsapp-cloud"
+  }
+}
